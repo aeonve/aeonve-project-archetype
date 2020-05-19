@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.aeonve</groupId>
+  <artifactId>aeonve-project-archetype</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+
+  <name>${project.artifactId}</name>
+  <description>项目框架模板工程</description>
+  <url>https://aeonve.github.io</url>
+  <packaging>pom</packaging>
+
+  <distributionManagement>
+    <site>
+      <id>${project.artifactId}-filesystem</id>
+      <url>file://./</url>
+    </site>
+  </distributionManagement>
+
+  <modules>
+    <module>aeonve-project-archetype-api</module>
+    <module>aeonve-project-archetype-sdk</module>
+    <module>aeonve-project-archetype-service</module>
+  </modules>
+
+  <properties>
+    <!--
+      jar 依赖规范：
+            1. 经常变更的 jar ，比如公司内部的 SNAPSHOT 版本的 jar， 放在靠前部分，方便对其变更修改
+            2. 比较稳定的 jar ，可以靠后一些，比如 spring 、apache、google 的 jar
+            3. 各部分通过 空行 拆分出界限,各部分分别以字典顺序排序
+     -->
+
+
+    <!--     ////////////////////////////////////////////////////////////////////  -->
+    <!--                              项目固定配置                                   -->
+    <!--     ////////////////////////////////////////////////////////////////////  -->
+    <!--    basic config  -->
+    <javaVersion>8</javaVersion>
+    <official.common.encoding>UTF-8</official.common.encoding>
+    <project.build.sourceEncoding>${official.common.encoding}</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>${official.common.encoding}</project.reporting.outputEncoding>
+    <project.compiler.source>1.${javaVersion}</project.compiler.source>
+    <project.compiler.target>1.${javaVersion}</project.compiler.target>
+
+    <!-- 常用maven插件  -->
+    <cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>
+    <findbugs-maven-plugin.version>3.0.5</findbugs-maven-plugin.version>
+    <javadocExecutable>${java.home}/../bin/javadoc</javadocExecutable>
+    <maven-archetype-plugin.version>3.1.2</maven-archetype-plugin.version>
+    <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+    <maven-javadoc-plugin.version>3.1.0</maven-javadoc-plugin.version>
+    <maven-jxr-plugin.version>3.0.0</maven-jxr-plugin.version>
+    <maven-pmd-plugin.version>3.13.0</maven-pmd-plugin.version>
+    <maven-project-info-reports-plugin.version>3.0.0</maven-project-info-reports-plugin.version>
+    <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
+    <maven.site.path>${project.name}</maven.site.path><!-- to be overridden -->
+    <maven-site-plugin.version>3.9.0</maven-site-plugin.version>
+    <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+    <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
+
+    <!--    maven checkstyle  -->
+    <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
+    <maven-checkstyle.confing.file>settings/checkstyle/checkstyle.xml</maven-checkstyle.confing.file>
+    <maven-checkstyle.confing.maxAllowedViolations>0</maven-checkstyle.confing.maxAllowedViolations>
+    <maven-checkstyle.confing.violationSeverity>warning</maven-checkstyle.confing.violationSeverity>
+    <maven-checkstyle.confing.skip>false</maven-checkstyle.confing.skip>
+    <maven-checkstyle.confing.failsOnError>true</maven-checkstyle.confing.failsOnError>
+    <maven-checkstyle.confing.consoleOutput>true</maven-checkstyle.confing.consoleOutput>
+    <maven-checkstyle.confing.linkXRef>false</maven-checkstyle.confing.linkXRef>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.12</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+
+        <!--
+          maven 命令的格式为 mvn [plugin-name]:[goal-name]，可以接受的参数如下。
+
+          -D 指定参数，如 -Dmaven.test.skip=true 跳过单元测试；
+          -P 指定 Profile 配置，可以用于区分环境；
+          -e 显示maven运行出错的信息；
+          -o 离线执行命令,即不去远程仓库更新包；
+          -X 显示maven允许的debug信息；
+          -U 强制去远程更新snapshot的插件或依赖，默认每天只更新一次。
+        -->
+
+        <!--
+        maven-compiler-plugin编译源代码。
+        指定maven编译的jdk版本,如果不指定,默认使用setting.xml中的配置,(maven3默认用jdk 1.5 maven2默认用jdk1.3)
+        windows默认使用GBK编码，java项目经常编码为utf8，也需要在compiler插件中指出，否则中文乱码可能会出现编译错
+        -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${maven-compiler-plugin.version}</version>
+          <configuration>
+            <source>${project.compiler.source}</source>
+            <target>${project.compiler.target}</target>
+            <encoding>${official.common.encoding}</encoding>
+          </configuration>
+        </plugin>
+
+        <!--  资源处理(文件拷贝/过滤等)  -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>${maven-resources-plugin.version}</version>
+          <configuration>
+            <encoding>${official.common.encoding}</encoding>
+          </configuration>
+        </plugin>
+
+        <!--  源码打包  -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <configuration>
+          </configuration>
+          <executions>
+            <execution>
+              <id>attach-sources</id>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <!-- 脚手架插件 -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-archetype-plugin</artifactId>
+          <version>${maven-archetype-plugin.version}</version>
+        </plugin>
+
+        <!-- 一个命令更新版本，mvn versions:set -DnewVersion=1.2-SNAPSHOT -->
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>versions-maven-plugin</artifactId>
+          <version>${versions-maven-plugin.version}</version>
+          <configuration>
+            <generateBackupPoms>false</generateBackupPoms>
+          </configuration>
+        </plugin>
+
+        <!--  项目站点  -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>${maven-site-plugin.version}</version>
+          <configuration>
+            <locales>zh_CN</locales>
+            <inputEncoding>${official.common.encoding}</inputEncoding>
+            <outputEncoding>${official.common.encoding}</outputEncoding>
+            <!-- for multi-modules site staging -->
+            <topSiteURL>file://./</topSiteURL>
+          </configuration>
+        </plugin>
+
+        <!--  项目信息报告  -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-project-info-reports-plugin</artifactId>
+          <version>${maven-project-info-reports-plugin.version}</version>
+          <configuration>
+            <inputEncoding>${official.common.encoding}</inputEncoding>
+            <outputEncoding>${official.common.encoding}</outputEncoding>
+            <customBundle>settings/properties/project.properties</customBundle>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jxr-plugin</artifactId>
+          <version>${maven-jxr-plugin.version}</version>
+        </plugin>
+
+        <!--  maven-surefire-plugin是运行mvn test时执行测试的插件 -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${maven-surefire-plugin.version}</version>
+          <configuration>
+            <!--
+            单测乱码问题
+
+            https://www.cnblogs.com/discuss/archive/2010/10/27/1862225.html
+
+            maven-surefire-plugin是运行mvn test时执行测试的插件,其有一个配置参数forkMode,默认为once,即表示每次运行test时,
+            新建一个JVM进程运行所有test.这可能会导致乱码问题.首先将forkMode设置为never,即不新建.再运行mvn test,全部OK了.果然是这个问题!!
+
+            于是再找官方参数说明,发现了argLine参数,这个参数与forkMode一起使用,可以设置新建JVM时的JVM启动参数,
+            于是设置<argLine>-Dfile.encoding=UTF-8</argLine>,明确指定一下JVM的file.encoding,并将forkMode从never改回once,
+            还是每次新建一个JVM进程.再次运行mvn test,一起OK了,问题解决.
+
+            究其原因,是因为MAVEN的maven-surefire-plugin在新建JVM进程后,由于没有指定encoding,采用了OS的默认编码,
+            导致读取UTF-8文件(测试类的sql脚本文件)时出现乱码,最终影响了TestNG的正确执行
+            -->
+            <argLine>-Dfile.encoding=${official.common.encoding}</argLine>
+          </configuration>
+        </plugin>
+
+        <!--  测试覆盖率  -->
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>cobertura-maven-plugin</artifactId>
+          <version>${cobertura-maven-plugin.version}</version>
+        </plugin>
+
+        <!--  javadoc  -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>${maven-javadoc-plugin.version}</version>
+        </plugin>
+
+        <!--
+             【编码规范】
+              公共checkstyle标准配置，可以在子模块中覆盖，修改自定义选项
+              帮助JAVA开发人员遵守某些编码规范的工具。通过检查代码编码格式，命名约定，Javadoc，
+              类设计等方面进行代码规范和风格的检查，从而有效约束开发人员更好地遵循代码编写规范
+        -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>${maven-checkstyle-plugin.version}</version>
+          <configuration>
+            <configLocation>${maven-checkstyle.confing.file}</configLocation>
+            <encoding>${project.build.sourceEncoding}</encoding>
+            <consoleOutput>${maven-checkstyle.confing.consoleOutput}</consoleOutput>
+            <failsOnError>${maven-checkstyle.confing.failsOnError}</failsOnError>
+            <linkXRef>${maven-checkstyle.confing.linkXRef}</linkXRef>
+            <skip>${maven-checkstyle.confing.skip}</skip>
+            <violationSeverity>${maven-checkstyle.confing.violationSeverity}</violationSeverity>
+            <maxAllowedViolations>${maven-checkstyle.confing.maxAllowedViolations}</maxAllowedViolations>
+          </configuration>
+          <executions>
+            <execution>
+              <id>validate codestyle</id>
+              <phase>validate</phase>
+              <goals>
+                <goal>check</goal>
+                <goal>checkstyle</goal>
+                <goal>checkstyle-aggregate</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <!--
+             【静态代码分析】
+              通过其内置的编码规则对 Java 源代码进行静态检查，
+              主要包括对潜在的 bug，未使用的代码，重复的代码，循环体创建新对象等问题的检验
+        -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-pmd-plugin</artifactId>
+          <version>${maven-pmd-plugin.version}</version>
+          <configuration>
+            <aggregate>true</aggregate>
+            <printFailingErrors>true</printFailingErrors>
+            <targetJdk>${project.compiler.target}</targetJdk>
+            <sourceEncoding>${official.common.encoding}</sourceEncoding>
+            <rulesets>
+              <ruleset>rulesets/java/ali-comment.xml</ruleset>
+              <ruleset>rulesets/java/ali-concurrent.xml</ruleset>
+              <ruleset>rulesets/java/ali-constant.xml</ruleset>
+              <ruleset>rulesets/java/ali-exception.xml</ruleset>
+              <ruleset>rulesets/java/ali-flowcontrol.xml</ruleset>
+              <ruleset>rulesets/java/ali-naming.xml</ruleset>
+              <ruleset>rulesets/java/ali-oop.xml</ruleset>
+              <ruleset>rulesets/java/ali-orm.xml</ruleset>
+              <ruleset>rulesets/java/ali-other.xml</ruleset>
+              <ruleset>rulesets/java/ali-set.xml</ruleset>
+            </rulesets>
+          </configuration>
+          <executions>
+            <execution>
+              <id>validate pmd</id>
+              <phase>validate</phase>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+          <dependencies>
+            <dependency>
+              <groupId>com.alibaba.p3c</groupId>
+              <artifactId>p3c-pmd</artifactId>
+              <version>2.0.1</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+
+        <!--
+             【静态分析】
+              检查类或者 JAR 文件，将字节码与一组缺陷模式进行对比以发现可能的问题。
+              有了静态分析工具，就可以在不实际运行程序的情况对软件进行分析
+        -->
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>findbugs-maven-plugin</artifactId>
+          <version>${findbugs-maven-plugin.version}</version>
+          <configuration>
+            <findbugsXmlOutput>true</findbugsXmlOutput>
+            <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
+            <xmlOutput>true</xmlOutput>
+          </configuration>
+        </plugin>
+
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <!-- 所有子模块都要执行的报告 -->
+      <!--      <plugin>-->
+      <!--        <groupId>org.apache.maven.plugins</groupId>-->
+      <!--        <artifactId>maven-javadoc-plugin</artifactId>-->
+      <!--      </plugin>-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+      </plugin>
+      <!--      <plugin>-->
+      <!--        <groupId>org.apache.maven.plugins</groupId>-->
+      <!--        <artifactId>maven-pmd-plugin</artifactId>-->
+      <!--      </plugin>-->
+    </plugins>
+
+  </build>
+
+  <!--  项目报告配置  -->
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>index</report>
+              <report>summary</report>
+              <report>dependency-info</report>
+              <report>modules</report>
+              <report>team</report>
+              <report>scm</report>
+              <report>issue-management</report>
+              <report>mailing-lists</report>
+              <report>dependency-management</report>
+              <report>dependencies</report>
+              <report>dependency-convergence</report>
+              <report>ci-management</report>
+              <report>plugin-management</report>
+              <report>plugins</report>
+              <report>distribution-management</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <id>aggregate</id>
+            <inherited>false</inherited>
+            <reports>
+              <report>aggregate</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+      </plugin>
+
+      <!--      <plugin>-->
+      <!--        <groupId>org.apache.maven.plugins</groupId>-->
+      <!--        <artifactId>maven-pmd-plugin</artifactId>-->
+      <!--      </plugin>-->
+
+      <!--      <plugin>-->
+      <!--        <groupId>org.codehaus.mojo</groupId>-->
+      <!--        <artifactId>cobertura-maven-plugin</artifactId>-->
+      <!--      </plugin>-->
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <doclint>none</doclint>
+          <source>${project.compiler.source}</source>
+          <charset>${official.common.encoding}</charset>
+          <encoding>${official.common.encoding}</encoding>
+          <docencoding>${official.common.encoding}</docencoding>
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <id>aggregate</id>
+            <inherited>false</inherited>
+            <reports>
+              <report>aggregate</report>
+            </reports>
+          </reportSet>
+          <reportSet>
+            <id>default</id>
+            <reports>
+              <report>javadoc</report>
+            </reports>
+            <configuration>
+              <aggregate>true</aggregate>
+            </configuration>
+          </reportSet>
+        </reportSets>
+      </plugin>
+
+    </plugins>
+  </reporting>
+
+</project>

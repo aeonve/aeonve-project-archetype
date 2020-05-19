@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/DECORATION/1.8.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/DECORATION/1.8.0 http://maven.apache.org/xsd/decoration-1.8.0.xsd"
+  name="${project.name}">
+
+  <bannerLeft>
+    <name>${project.name}</name>
+    <height>200</height>
+    <href>${this.url}/index.html</href>
+  </bannerLeft>
+
+  <bannerRight>
+    <name>${project.name}</name>
+    <src>${this.url}/imgs/logo.png</src>
+    <width>200</width>
+    <href>${this.url}/index.html</href>
+  </bannerRight>
+
+  <skin>
+    <groupId>org.apache.maven.skins</groupId>
+    <artifactId>maven-fluido-skin</artifactId>
+    <version>1.7</version>
+  </skin>
+
+  <!--  <custom>-->
+  <!--    <fluidoSkin>-->
+  <!--      <facebookLike />-->
+  <!--      <googlePlusOne />-->
+  <!--      <googleSearch>-->
+  <!--        <sitesearch>${project.url}</sitesearch>-->
+  <!--      </googleSearch>-->
+  <!--      <gitHub>-->
+  <!--        <projectId>aeonve/${project.name}</projectId>-->
+  <!--        <ribbonOrientation>right</ribbonOrientation>-->
+  <!--        <ribbonColor>black</ribbonColor>-->
+  <!--      </gitHub>-->
+  <!--    </fluidoSkin>-->
+  <!--  </custom>-->
+
+  <publishDate format="yyyy-MM-dd HH:mm:ss" position="right"/>
+  <version position="right"/>
+
+  <poweredBy inherit="bottom">
+    <logo name="${this.name}" href="${this.url}/index.html"
+      img="${this.url}/imgs/logo-1.png" width="100"/>
+  </poweredBy>
+
+  <body>
+
+    <breadcrumbs>
+      <item name="aeonve" href="${this.url}"/>
+      <item name="${this.name}" href="${this.url}/index.html"/>
+    </breadcrumbs>
+
+    <menu>
+      <item name="项目介绍" href="${this.url}/index.html"/>
+    </menu>
+
+    <menu ref="reports" inherit="bottom"/>
+    <menu ref="modules" name="项目模块"/>
+
+  </body>
+</project>

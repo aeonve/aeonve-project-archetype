@@ -34,6 +34,13 @@
             3. 各部分通过 空行 拆分出界限,各部分分别以字典顺序排序
      -->
 
+    <!-- test -->
+    <junit.version>4.12</junit.version>
+
+    <!-- log -->
+    <commons-logging.version>1.2</commons-logging.version>
+    <slf4j-api.version>1.7.25</slf4j-api.version>
+    <slf4j-log4j12.version>1.7.25</slf4j-log4j12.version>
 
     <!--     ////////////////////////////////////////////////////////////////////  -->
     <!--                              项目固定配置                                   -->
@@ -64,22 +71,40 @@
 
     <!--    maven checkstyle  -->
     <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
-    <maven-checkstyle.confing.file>settings/checkstyle/checkstyle.xml</maven-checkstyle.confing.file>
-    <maven-checkstyle.confing.maxAllowedViolations>0</maven-checkstyle.confing.maxAllowedViolations>
-    <maven-checkstyle.confing.violationSeverity>warning</maven-checkstyle.confing.violationSeverity>
-    <maven-checkstyle.confing.skip>false</maven-checkstyle.confing.skip>
-    <maven-checkstyle.confing.failsOnError>true</maven-checkstyle.confing.failsOnError>
-    <maven-checkstyle.confing.consoleOutput>true</maven-checkstyle.confing.consoleOutput>
-    <maven-checkstyle.confing.linkXRef>false</maven-checkstyle.confing.linkXRef>
+    <maven-checkstyle.config.configLocation>settings/checkstyle/checkstyle.xml</maven-checkstyle.config.configLocation>
+    <maven-checkstyle.config.maxAllowedViolations>0</maven-checkstyle.config.maxAllowedViolations>
+    <maven-checkstyle.config.violationSeverity>warning</maven-checkstyle.config.violationSeverity>
+    <maven-checkstyle.config.skip>false</maven-checkstyle.config.skip>
+    <maven-checkstyle.config.failsOnError>true</maven-checkstyle.config.failsOnError>
+    <maven-checkstyle.config.consoleOutput>true</maven-checkstyle.config.consoleOutput>
+    <maven-checkstyle.config.linkXRef>false</maven-checkstyle.config.linkXRef>
   </properties>
 
   <dependencyManagement>
     <dependencies>
 
+      <!--log-->
+      <dependency>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
+        <version>${commons-logging.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j-api.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>${slf4j-log4j12.version}</version>
+        <scope>runtime</scope>
+      </dependency>
+
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>4.12</version>
+        <version>${junit.version}</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
@@ -241,14 +266,14 @@
           <artifactId>maven-checkstyle-plugin</artifactId>
           <version>${maven-checkstyle-plugin.version}</version>
           <configuration>
-            <configLocation>${maven-checkstyle.confing.file}</configLocation>
+            <configLocation>${maven-checkstyle.config.configLocation}</configLocation>
             <encoding>${project.build.sourceEncoding}</encoding>
-            <consoleOutput>${maven-checkstyle.confing.consoleOutput}</consoleOutput>
-            <failsOnError>${maven-checkstyle.confing.failsOnError}</failsOnError>
-            <linkXRef>${maven-checkstyle.confing.linkXRef}</linkXRef>
-            <skip>${maven-checkstyle.confing.skip}</skip>
-            <violationSeverity>${maven-checkstyle.confing.violationSeverity}</violationSeverity>
-            <maxAllowedViolations>${maven-checkstyle.confing.maxAllowedViolations}</maxAllowedViolations>
+            <consoleOutput>${maven-checkstyle.config.consoleOutput}</consoleOutput>
+            <failsOnError>${maven-checkstyle.config.failsOnError}</failsOnError>
+            <linkXRef>${maven-checkstyle.config.linkXRef}</linkXRef>
+            <skip>${maven-checkstyle.config.skip}</skip>
+            <violationSeverity>${maven-checkstyle.config.violationSeverity}</violationSeverity>
+            <maxAllowedViolations>${maven-checkstyle.config.maxAllowedViolations}</maxAllowedViolations>
           </configuration>
           <executions>
             <execution>
@@ -354,7 +379,6 @@
         <reportSets>
           <reportSet>
             <reports>
-              <report>index</report>
               <report>summary</report>
               <report>dependency-info</report>
               <report>modules</report>

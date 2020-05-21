@@ -8,36 +8,14 @@
   <bannerLeft>
     <name>${project.name}</name>
     <height>200</height>
-    <href>${this.url}/index.html</href>
   </bannerLeft>
 
   <bannerRight>
     <name>${project.name}</name>
     <src>${this.url}/imgs/logo.png</src>
-    <width>200</width>
+    <width>300</width>
     <href>${this.url}/index.html</href>
   </bannerRight>
-
-  <skin>
-    <groupId>org.apache.maven.skins</groupId>
-    <artifactId>maven-fluido-skin</artifactId>
-    <version>1.7</version>
-  </skin>
-
-  <!--  <custom>-->
-  <!--    <fluidoSkin>-->
-  <!--      <facebookLike />-->
-  <!--      <googlePlusOne />-->
-  <!--      <googleSearch>-->
-  <!--        <sitesearch>${project.url}</sitesearch>-->
-  <!--      </googleSearch>-->
-  <!--      <gitHub>-->
-  <!--        <projectId>aeonve/${project.name}</projectId>-->
-  <!--        <ribbonOrientation>right</ribbonOrientation>-->
-  <!--        <ribbonColor>black</ribbonColor>-->
-  <!--      </gitHub>-->
-  <!--    </fluidoSkin>-->
-  <!--  </custom>-->
 
   <publishDate format="yyyy-MM-dd HH:mm:ss" position="right"/>
   <version position="right"/>
@@ -46,6 +24,12 @@
     <logo name="${this.name}" href="${this.url}/index.html"
       img="${this.url}/imgs/logo-1.png" width="100"/>
   </poweredBy>
+
+  <skin>
+    <groupId>org.apache.maven.skins</groupId>
+    <artifactId>maven-fluido-skin</artifactId>
+    <version>1.7</version>
+  </skin>
 
   <body>
 
@@ -62,4 +46,20 @@
     <menu ref="modules" name="项目模块"/>
 
   </body>
+
+  <!--  <custom>-->
+  <!--    <fluidoSkin>-->
+  <!--      <facebookLike />-->
+  <!--      <googlePlusOne />-->
+  <!--      <googleSearch>-->
+  <!--        <sitesearch>${project.url}</sitesearch>-->
+  <!--      </googleSearch>-->
+  <!--      <gitHub>-->
+  <!--        <projectId>aeonve/${project.name}</projectId>-->
+  <!--        <ribbonOrientation>right</ribbonOrientation>-->
+  <!--        <ribbonColor>black</ribbonColor>-->
+  <!--      </gitHub>-->
+  <!--    </fluidoSkin>-->
+  <!--  </custom>-->
+
 </project>

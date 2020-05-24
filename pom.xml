@@ -54,6 +54,7 @@
     <project.compiler.target>1.${javaVersion}</project.compiler.target>
 
     <!-- 常用maven插件  -->
+    <alibaba-p3c-pmd.version>2.0.1</alibaba-p3c-pmd.version>
     <cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>
     <findbugs-maven-plugin.version>3.0.5</findbugs-maven-plugin.version>
     <javadocExecutable>${java.home}/../bin/javadoc</javadocExecutable>
@@ -70,6 +71,7 @@
     <maven-site-localization.version>zh_CN</maven-site-localization.version>
     <maven-site-plugin.version>3.9.0</maven-site-plugin.version>
     <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+    <sourceforge-pmd-core.version>6.23.0</sourceforge-pmd-core.version>
     <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
 
     <!--    maven checkstyle  -->
@@ -295,16 +297,30 @@
              【静态代码分析】
               通过其内置的编码规则对 Java 源代码进行静态检查，
               主要包括对潜在的 bug，未使用的代码，重复的代码，循环体创建新对象等问题的检验
+
+              PMD和Find-bugs是Java里最常用的两个静态检查工具，前者基于源码，后者基于字节码
         -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-pmd-plugin</artifactId>
           <version>${maven-pmd-plugin.version}</version>
           <configuration>
+            <linkXRef>true</linkXRef>
             <aggregate>true</aggregate>
+            <includeTests>true</includeTests>
+            <minimumTokens>30</minimumTokens>
+            <minimumPriority>1</minimumPriority>
+            <failOnViolation>true</failOnViolation>
+            <skipEmptyReport>false</skipEmptyReport>
             <printFailingErrors>true</printFailingErrors>
             <targetJdk>${project.compiler.target}</targetJdk>
             <sourceEncoding>${official.common.encoding}</sourceEncoding>
+            <excludes>
+              <exclude>**/generated/*.java</exclude>
+            </excludes>
+            <excludeRoots>
+              <excludeRoot>target/generated-sources</excludeRoot>
+            </excludeRoots>
             <rulesets>
               <ruleset>rulesets/java/ali-comment.xml</ruleset>
               <ruleset>rulesets/java/ali-concurrent.xml</ruleset>
@@ -321,7 +337,7 @@
           <executions>
             <execution>
               <id>validate pmd</id>
-              <phase>validate</phase>
+              <phase>install</phase>
               <goals>
                 <goal>check</goal>
               </goals>
@@ -331,7 +347,28 @@
             <dependency>
               <groupId>com.alibaba.p3c</groupId>
               <artifactId>p3c-pmd</artifactId>
-              <version>2.0.1</version>
+              <version>${alibaba-p3c-pmd.version}</version>
+            </dependency>
+            <!-- pmd -->
+            <dependency>
+              <groupId>net.sourceforge.pmd</groupId>
+              <artifactId>pmd-core</artifactId>
+              <version>${sourceforge-pmd-core.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>net.sourceforge.pmd</groupId>
+              <artifactId>pmd-java</artifactId>
+              <version>${sourceforge-pmd-core.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>net.sourceforge.pmd</groupId>
+              <artifactId>pmd-javascript</artifactId>
+              <version>${sourceforge-pmd-core.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>net.sourceforge.pmd</groupId>
+              <artifactId>pmd-jsp</artifactId>
+              <version>${sourceforge-pmd-core.version}</version>
             </dependency>
           </dependencies>
         </plugin>
@@ -357,18 +394,18 @@
 
     <plugins>
       <!-- 所有子模块都要执行的报告 -->
-      <!--      <plugin>-->
-      <!--        <groupId>org.apache.maven.plugins</groupId>-->
-      <!--        <artifactId>maven-javadoc-plugin</artifactId>-->
-      <!--      </plugin>-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
       </plugin>
-      <!--      <plugin>-->
-      <!--        <groupId>org.apache.maven.plugins</groupId>-->
-      <!--        <artifactId>maven-pmd-plugin</artifactId>-->
-      <!--      </plugin>-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+      </plugin>
     </plugins>
 
   </build>
@@ -420,10 +457,10 @@
         <artifactId>maven-checkstyle-plugin</artifactId>
       </plugin>
 
-      <!--      <plugin>-->
-      <!--        <groupId>org.apache.maven.plugins</groupId>-->
-      <!--        <artifactId>maven-pmd-plugin</artifactId>-->
-      <!--      </plugin>-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+      </plugin>
 
       <!--      <plugin>-->
       <!--        <groupId>org.codehaus.mojo</groupId>-->

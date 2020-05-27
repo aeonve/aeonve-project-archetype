@@ -65,12 +65,13 @@
     <maven-pmd-plugin.version>3.13.0</maven-pmd-plugin.version>
     <maven-project-info-reports-plugin.version>3.0.0</maven-project-info-reports-plugin.version>
     <maven-project-info-custom.version>
+      <!--      https://maven.apache.org/plugins/maven-project-info-reports-plugin/examples/custom-report.html-->
       settings/properties/project-info-custom-${maven-site-localization.version}.properties
     </maven-project-info-custom.version>
     <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
     <maven-site-localization.version>zh_CN</maven-site-localization.version>
     <maven-site-plugin.version>3.9.0</maven-site-plugin.version>
-    <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+    <maven-surefire-plugin.version>3.0.0-M4</maven-surefire-plugin.version>
     <sourceforge-pmd-core.version>6.23.0</sourceforge-pmd-core.version>
     <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
 
@@ -227,6 +228,9 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>${maven-surefire-plugin.version}</version>
           <configuration>
+            <!--    解决问题：VM crash or System.exit called？ -->
+            <forkCount>0</forkCount>
+            <useSystemClassLoader>false</useSystemClassLoader>
             <!--
             单测乱码问题
 
